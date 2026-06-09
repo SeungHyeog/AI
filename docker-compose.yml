@@ -1,0 +1,9 @@
+services:
+  ai-backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      KUBEPILOT_ENV: local

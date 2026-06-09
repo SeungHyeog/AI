@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: kubepilot/ai-backend
+  pullPolicy: IfNotPresent
+  tag: "0.1.0"
+
+service:
+  type: ClusterIP
+  port: 8000
+
+resources: {}
+
+podAnnotations: {}
+podLabels: {}
