@@ -1,6 +1,0 @@
-apiVersion: v2
-name: ai-backend
-description: FastAPI backend for KubePilot AI
-type: application
-version: 0.1.0
-appVersion: "0.1.0"

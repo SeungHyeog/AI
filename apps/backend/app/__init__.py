@@ -1,1 +1,0 @@
-"""KubePilot AI backend package."""
