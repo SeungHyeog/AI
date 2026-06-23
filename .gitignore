@@ -20,6 +20,9 @@ dist/
 # Build output
 build/
 coverage/
+.tsbuildinfo/
+tsconfig.tsbuildinfo
+*.tsbuildinfo
 
 # OS and editor
 .DS_Store
