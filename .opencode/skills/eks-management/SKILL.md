@@ -9,10 +9,12 @@ Use the `safe-eks` MCP tools for EKS inventory and read-only administration.
 
 ## Rules
 
+- Run this skill inside the `hermes-closed-loop` workflow for non-trivial requests: observe, plan, act, verify, reflect, then update skills only with verified reusable lessons.
 - Start in readonly mode. Do not request credentials, kubeconfig contents, or secrets.
 - Always ask for `region` and `cluster` when a tool touches a specific EKS cluster.
 - Prefer AWS tools for EKS control-plane inventory and kubectl/helm tools for workload state.
 - Use `eks_generate_kubeconfig_dry_run` only to inspect generated kubeconfig output; do not write kubeconfig files.
+- After verified management work, update this skill only for durable inventory or context-selection lessons. Put unverified lessons in `.opencode/learning/skill-backlog.md`.
 
 ## Useful Tools
 

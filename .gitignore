@@ -23,7 +23,8 @@ coverage/
 .tsbuildinfo/
 tsconfig.tsbuildinfo
 *.tsbuildinfo
-
+.omo/
+.graphify-venv/
 # OS and editor
 .DS_Store
 .idea/
