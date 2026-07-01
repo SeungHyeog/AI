@@ -4,7 +4,7 @@ from mcp.server.fastmcp import FastMCP
 
 from . import aws_tools, control_tools, helm_tools, kubectl_tools
 from .config import load_config
-from .types import ToolPayloadJson
+from .response import ToolPayloadModel, payload_model
 
 
 def create_mcp() -> FastMCP:
@@ -12,32 +12,32 @@ def create_mcp() -> FastMCP:
     mcp = FastMCP("safe-eks-mcp")
 
     @mcp.tool()
-    def aws_eks_list_clusters(region: str) -> ToolPayloadJson:
-        return aws_tools.aws_eks_list_clusters(config, region)
+    def aws_eks_list_clusters(region: str) -> ToolPayloadModel:
+        return payload_model(aws_tools.aws_eks_list_clusters(config, region))
 
     @mcp.tool()
-    def aws_eks_describe_cluster(region: str, cluster: str) -> ToolPayloadJson:
-        return aws_tools.aws_eks_describe_cluster(config, region, cluster)
+    def aws_eks_describe_cluster(region: str, cluster: str) -> ToolPayloadModel:
+        return payload_model(aws_tools.aws_eks_describe_cluster(config, region, cluster))
 
     @mcp.tool()
-    def aws_eks_list_nodegroups(region: str, cluster: str) -> ToolPayloadJson:
-        return aws_tools.aws_eks_list_nodegroups(config, region, cluster)
+    def aws_eks_list_nodegroups(region: str, cluster: str) -> ToolPayloadModel:
+        return payload_model(aws_tools.aws_eks_list_nodegroups(config, region, cluster))
 
     @mcp.tool()
-    def aws_eks_describe_nodegroup(region: str, cluster: str, nodegroup: str) -> ToolPayloadJson:
-        return aws_tools.aws_eks_describe_nodegroup(config, region, cluster, nodegroup)
+    def aws_eks_describe_nodegroup(region: str, cluster: str, nodegroup: str) -> ToolPayloadModel:
+        return payload_model(aws_tools.aws_eks_describe_nodegroup(config, region, cluster, nodegroup))
 
     @mcp.tool()
-    def aws_eks_list_addons(region: str, cluster: str) -> ToolPayloadJson:
-        return aws_tools.aws_eks_list_addons(config, region, cluster)
+    def aws_eks_list_addons(region: str, cluster: str) -> ToolPayloadModel:
+        return payload_model(aws_tools.aws_eks_list_addons(config, region, cluster))
 
     @mcp.tool()
-    def aws_eks_describe_addon(region: str, cluster: str, addon: str) -> ToolPayloadJson:
-        return aws_tools.aws_eks_describe_addon(config, region, cluster, addon)
+    def aws_eks_describe_addon(region: str, cluster: str, addon: str) -> ToolPayloadModel:
+        return payload_model(aws_tools.aws_eks_describe_addon(config, region, cluster, addon))
 
     @mcp.tool()
-    def eks_generate_kubeconfig_dry_run(region: str, cluster: str) -> ToolPayloadJson:
-        return aws_tools.eks_generate_kubeconfig_dry_run(config, region, cluster)
+    def eks_generate_kubeconfig_dry_run(region: str, cluster: str) -> ToolPayloadModel:
+        return payload_model(aws_tools.eks_generate_kubeconfig_dry_run(config, region, cluster))
 
     @mcp.tool()
     def kubectl_get(
@@ -49,9 +49,11 @@ def create_mcp() -> FastMCP:
         allNamespaces: bool = False,
         output: kubectl_tools.OutputFormat = "json",
         selector: str | None = None,
-    ) -> ToolPayloadJson:
-        return kubectl_tools.kubectl_get(
-            config, region, cluster, resource, name, namespace, allNamespaces, output, selector
+    ) -> ToolPayloadModel:
+        return payload_model(
+            kubectl_tools.kubectl_get(
+                config, region, cluster, resource, name, namespace, allNamespaces, output, selector
+            )
         )
 
     @mcp.tool()
@@ -61,8 +63,8 @@ def create_mcp() -> FastMCP:
         resource: str,
         name: str,
         namespace: str | None = None,
-    ) -> ToolPayloadJson:
-        return kubectl_tools.kubectl_describe(config, region, cluster, resource, name, namespace)
+    ) -> ToolPayloadModel:
+        return payload_model(kubectl_tools.kubectl_describe(config, region, cluster, resource, name, namespace))
 
     @mcp.tool()
     def kubectl_logs(
@@ -73,8 +75,10 @@ def create_mcp() -> FastMCP:
         container: str | None = None,
         tail: int = 200,
         since: str | None = None,
-    ) -> ToolPayloadJson:
-        return kubectl_tools.kubectl_logs(config, region, cluster, pod, namespace, container, tail, since)
+    ) -> ToolPayloadModel:
+        return payload_model(
+            kubectl_tools.kubectl_logs(config, region, cluster, pod, namespace, container, tail, since)
+        )
 
     @mcp.tool()
     def kubectl_events(
@@ -82,8 +86,8 @@ def create_mcp() -> FastMCP:
         cluster: str,
         namespace: str | None = None,
         fieldSelector: str | None = None,
-    ) -> ToolPayloadJson:
-        return kubectl_tools.kubectl_events(config, region, cluster, namespace, fieldSelector)
+    ) -> ToolPayloadModel:
+        return payload_model(kubectl_tools.kubectl_events(config, region, cluster, namespace, fieldSelector))
 
     @mcp.tool()
     def kubectl_auth_can_i(
@@ -92,8 +96,8 @@ def create_mcp() -> FastMCP:
         verb: str,
         resource: str,
         namespace: str | None = None,
-    ) -> ToolPayloadJson:
-        return kubectl_tools.kubectl_auth_can_i(config, region, cluster, verb, resource, namespace)
+    ) -> ToolPayloadModel:
+        return payload_model(kubectl_tools.kubectl_auth_can_i(config, region, cluster, verb, resource, namespace))
 
     @mcp.tool()
     def helm_list(
@@ -101,16 +105,16 @@ def create_mcp() -> FastMCP:
         cluster: str,
         namespace: str | None = None,
         allNamespaces: bool = False,
-    ) -> ToolPayloadJson:
-        return helm_tools.helm_list(config, region, cluster, namespace, allNamespaces)
+    ) -> ToolPayloadModel:
+        return payload_model(helm_tools.helm_list(config, region, cluster, namespace, allNamespaces))
 
     @mcp.tool()
-    def helm_status(region: str, cluster: str, release: str, namespace: str | None = None) -> ToolPayloadJson:
-        return helm_tools.helm_status(config, region, cluster, release, namespace)
+    def helm_status(region: str, cluster: str, release: str, namespace: str | None = None) -> ToolPayloadModel:
+        return payload_model(helm_tools.helm_status(config, region, cluster, release, namespace))
 
     @mcp.tool()
-    def helm_history(region: str, cluster: str, release: str, namespace: str | None = None) -> ToolPayloadJson:
-        return helm_tools.helm_history(config, region, cluster, release, namespace)
+    def helm_history(region: str, cluster: str, release: str, namespace: str | None = None) -> ToolPayloadModel:
+        return payload_model(helm_tools.helm_history(config, region, cluster, release, namespace))
 
     @mcp.tool()
     def helm_template(
@@ -121,8 +125,10 @@ def create_mcp() -> FastMCP:
         namespace: str | None = None,
         valuesFile: str | None = None,
         set: dict[str, str | int | bool] | None = None,
-    ) -> ToolPayloadJson:
-        return helm_tools.helm_template(config, region, cluster, release, chart, namespace, valuesFile, set)
+    ) -> ToolPayloadModel:
+        return payload_model(
+            helm_tools.helm_template(config, region, cluster, release, chart, namespace, valuesFile, set)
+        )
 
     @mcp.tool()
     def helm_lint(
@@ -133,8 +139,8 @@ def create_mcp() -> FastMCP:
         namespace: str | None = None,
         valuesFile: str | None = None,
         set: dict[str, str | int | bool] | None = None,
-    ) -> ToolPayloadJson:
-        return helm_tools.helm_lint(config, region, cluster, release, chart, namespace, valuesFile, set)
+    ) -> ToolPayloadModel:
+        return payload_model(helm_tools.helm_lint(config, region, cluster, release, chart, namespace, valuesFile, set))
 
     @mcp.tool()
     def plan_kubectl_apply(
@@ -142,8 +148,8 @@ def create_mcp() -> FastMCP:
         cluster: str,
         manifestPath: str,
         namespace: str | None = None,
-    ) -> ToolPayloadJson:
-        return control_tools.plan_kubectl_apply(config, region, cluster, manifestPath, namespace)
+    ) -> ToolPayloadModel:
+        return payload_model(control_tools.plan_kubectl_apply(config, region, cluster, manifestPath, namespace))
 
     @mcp.tool()
     def apply_kubectl_apply_confirmed(
@@ -153,8 +159,8 @@ def create_mcp() -> FastMCP:
         confirmationHash: str,
         confirmationToken: str,
         namespace: str | None = None,
-    ) -> ToolPayloadJson:
-        return control_tools.apply_kubectl_apply_confirmed(
+    ) -> ToolPayloadModel:
+        return payload_model(control_tools.apply_kubectl_apply_confirmed(
             config,
             region,
             cluster,
@@ -162,7 +168,7 @@ def create_mcp() -> FastMCP:
             confirmationHash,
             confirmationToken,
             namespace,
-        )
+        ))
 
     @mcp.tool()
     def plan_helm_upgrade(
@@ -174,9 +180,11 @@ def create_mcp() -> FastMCP:
         valuesFile: str | None = None,
         set: dict[str, str | int | bool] | None = None,
         install: bool = True,
-    ) -> ToolPayloadJson:
-        return control_tools.plan_helm_upgrade(
-            config, region, cluster, release, chart, namespace, valuesFile, set, install
+    ) -> ToolPayloadModel:
+        return payload_model(
+            control_tools.plan_helm_upgrade(
+                config, region, cluster, release, chart, namespace, valuesFile, set, install
+            )
         )
 
     @mcp.tool()
@@ -191,8 +199,8 @@ def create_mcp() -> FastMCP:
         valuesFile: str | None = None,
         set: dict[str, str | int | bool] | None = None,
         install: bool = True,
-    ) -> ToolPayloadJson:
-        return control_tools.apply_helm_upgrade_confirmed(
+    ) -> ToolPayloadModel:
+        return payload_model(control_tools.apply_helm_upgrade_confirmed(
             config,
             region,
             cluster,
@@ -204,7 +212,7 @@ def create_mcp() -> FastMCP:
             valuesFile,
             set,
             install,
-        )
+        ))
 
     return mcp
 

@@ -1,6 +1,41 @@
 from __future__ import annotations
 
+from typing import ClassVar
+
+from pydantic import BaseModel, ConfigDict
+
 from .types import ChangePlan, ChangePlanJson, CommandResult, CommandResultJson, ToolPayload, ToolPayloadJson
+
+
+class CommandResultModel(BaseModel):
+    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+
+    command: str
+    args: list[str]
+    exitCode: int
+    stdout: str
+    stderr: str
+    timedOut: bool
+
+
+class ChangePlanModel(BaseModel):
+    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+
+    kind: str
+    command: str
+    args: list[str]
+    confirmationHash: str
+    confirmationToken: str
+    warnings: list[str]
+
+
+class ToolPayloadModel(BaseModel):
+    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+
+    status: str
+    result: CommandResultModel | None = None
+    plan: ChangePlanModel | None = None
+    reason: str | None = None
 
 
 def payload_dict(payload: ToolPayload) -> ToolPayloadJson:
@@ -12,6 +47,10 @@ def payload_dict(payload: ToolPayload) -> ToolPayloadJson:
     if payload.reason is not None:
         data["reason"] = payload.reason
     return data
+
+
+def payload_model(payload: ToolPayloadJson) -> ToolPayloadModel:
+    return ToolPayloadModel.model_validate(payload)
 
 
 def to_camel(value: str) -> str:
