@@ -3,7 +3,7 @@
   "mcp": {
     "safe-eks": {
       "type": "local",
-      "command": ["node", "./dist/index.js"],
+      "command": ["uv", "run", "safe-eks-mcp"],
       "enabled": true,
       "environment": {
         "EKS_OPS_MODE": "readonly"

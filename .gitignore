@@ -25,6 +25,8 @@ tsconfig.tsbuildinfo
 *.tsbuildinfo
 .omo/
 .graphify-venv/
+.codegraph
+graphify-out/
 # OS and editor
 .DS_Store
 .idea/
